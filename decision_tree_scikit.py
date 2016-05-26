@@ -1,19 +1,20 @@
+__author__ = 'umeco'
+
 # coding:utf-8
 
 from sklearn import tree
 from sklearn.externals.six import StringIO
-import pydot
 import csv
 import numpy as np
 import Cross_validation
 
 #特定のデータ型の決定木図のpdfを作成する関数
-def create_DecisionTree(data,name):
+def create_DecisionTree(data):
     clf = tree.DecisionTreeClassifier()
-    clf = clf.fit(cdata[:,:-1], cdata[:,6])
+    clf = clf.fit(data[:,:-1], data[:,-1:])
     car_attribute=['buying','maint','doors','persons','lug_boot','safety']
     car_class=['unacc','acc','good','vgood']
-    with open("iris.dot", 'w') as f:
+    with open("car.dot", 'w') as f:
         f = tree.export_graphviz(clf, out_file=f)
     dot_data = StringIO()
     tree.export_graphviz(clf, out_file=dot_data,
@@ -21,8 +22,8 @@ def create_DecisionTree(data,name):
                          class_names=car_class,
                          filled=True, rounded=True,
                          special_characters=True)
-    graph = pydot.graph_from_dot_data(dot_data.getvalue())
-    graph.write_pdf("iris.pdf")
+    #graph = pydot.graph_from_dot_data(dot_data.getvalue())
+    #graph.write_pdf("car.pdf")
 
 #車のデータを生成（String型では決定木を作成できない）
 dic={'vhigh':4,'high':3,'med':2,'low':1,'5more':5,'more':5,
@@ -40,7 +41,6 @@ for i in range(len(car_data)):
 cdata=np.int32(car_data)
 
 clf = tree.DecisionTreeClassifier()
-print(Cross_validation.cross_validation(clf,cdata))
+print(str(Cross_validation.cross_validation(clf,cdata) * 100))
 
-
-
+create_DecisionTree(cdata)

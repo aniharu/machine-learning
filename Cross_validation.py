@@ -1,3 +1,5 @@
+__author__ = 'umeco'
+
 #coding: utf-8
 import random
 import numpy as np
@@ -13,14 +15,15 @@ def cross_validation(func, data, times=10):
         accuracy=0
         print("%d of %d" % (i+1, times))
         crossnum = np.array([False] * len(data))
-        crossnum[i * len(data) / 10:(i + 1) * len(data) / 10] = True
+        crossnum[i * len(data) / times:(i + 1) * len(data) / times] = True
         func.fit(newx[~crossnum],newy[~crossnum])
         pred=func.predict(newx[crossnum])
         test=newy[crossnum]
 
         for j in range(len(newx[crossnum])):
-            print ()
             if pred[j]==test[j]:
                 accuracy+=1
-        sum+=accuracy/len(newy[~crossnum])
+            else:
+                print ("pre:%d test:%d" %(pred[j] , test[j]))
+        sum+=accuracy/len(test)
     return sum / times
